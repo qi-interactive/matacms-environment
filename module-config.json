@@ -1,0 +1,6 @@
+{
+    "name": "MATA Environment",
+    "description": "Manages environment (PREVIEW, LIVE) for MATA",
+    "icon" : "/images/module-icon.svg",
+    "version" : 1.0
+}
