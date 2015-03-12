@@ -3,7 +3,6 @@
 namespace matacms\environment\models;
 
 use Yii;
-
 /**
  * This is the model class for table "matacms_itemenvironment".
  *
@@ -13,6 +12,9 @@ use Yii;
  */
 class ItemEnvironment extends \mata\db\ActiveRecord
 {
+
+    const REQ_PARAM_ITEM_ENVIRONMENT = "item_environment";
+    
     /**
      * @inheritdoc
      */
