@@ -36,7 +36,6 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function getPublishedRevision($model) {
 
-
 		$module = \Yii::$app->getModule("environment");
 
 		if ($module)
@@ -59,16 +58,20 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function processSave($model) {
 
+		$status = \Yii::$app->getRequest()->post(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
+
+		if ($status == null)
+			return;
+
 		$ie = new ItemEnvironment();
 		$ie->attributes = [
 		"DocumentId" => $model->getDocumentId(),
 		"Revision" => $model->getLatestRevision()->Revision,
-		"Status" => "PREVIEW"
+		"Status" => $status
 		];
 
 		if (!$ie->save())
 			throw new \yii\web\ServerErrorHttpException($ie->getTopError());
-
 
 	}
 }
