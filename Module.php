@@ -27,8 +27,13 @@ class Module extends BaseModule {
 	 */ 
 	public $liveEnvironment;
 
-	const DEFAULT_LIVE_ENVIRONMENT = "LIVE";
+	/**
+	 *  Name of the stage environment, which is not accessible by users who are not logged in.
+	 */ 
+	public $stageEnvironment;
 
+	const DEFAULT_LIVE_ENVIRONMENT = "LIVE";
+	const DEFAULT_STAGE_ENVIRONMENT = "DRAFT";
 
 	public function init() {
 
@@ -38,5 +43,13 @@ class Module extends BaseModule {
 
 	public function getNavigation() {
 		return false;
+	}
+
+	public function getLiveEnvironment() {
+		return $this->liveEnvironment ?: Module::DEFAULT_LIVE_ENVIRONMENT;
+	}
+
+	public function getStageEnvironment() {
+	return $this->stageEnvironment ?: Module::DEFAULT_STAGE_ENVIRONMENT;		
 	}
 }

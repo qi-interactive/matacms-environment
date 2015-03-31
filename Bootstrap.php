@@ -52,17 +52,13 @@ class Bootstrap extends \mata\base\Bootstrap {
 				break;
 			}
 		}
-		
 	}
 
 	private function getPublishedRevision($model) {
 
 		$module = \Yii::$app->getModule("environment");
 
-		if ($module)
-			$liveEnvironment = $module->liveEnvironment;
-		else 
-			$liveEnvironment = Module::DEFAULT_LIVE_ENVIRONMENT;
+		$liveEnvironment = $module->getLiveEnvironment();
 
 		// When logged into the CMS, latest version should be shown
 		if (Yii::$app->user->isGuest == false)

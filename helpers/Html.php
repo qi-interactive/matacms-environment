@@ -2,6 +2,7 @@
 
 namespace matacms\environment\helpers; 
 
+use Yii;
 use yii\helpers\Html as BaseHtml;
 use \matacms\environment\models\ItemEnvironment;
 use yii\web\View;
@@ -20,12 +21,12 @@ class Html {
 		$retVal .= BaseHtml::hiddenInput(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
 
 		$retVal .= BaseHtml::submitButton("Save", [
-			"data-environment" => "PREVIEW", 
+			"data-environment" => Yii::$app->getModule("environment")->getStageEnvironment(), 
 			"class" => "btn btn-primary"
 			]);
 
 		$retVal .= BaseHtml::submitButton("Publish", [
-			"data-environment" => "LIVE",
+			"data-environment" => Yii::$app->getModule("environment")->getLiveEnvironment(),
 			"class" => "btn btn-primary"
 			]);
 
