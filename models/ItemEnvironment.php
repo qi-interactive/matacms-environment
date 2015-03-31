@@ -14,6 +14,7 @@ class ItemEnvironment extends \mata\db\ActiveRecord
 {
 
     const REQ_PARAM_ITEM_ENVIRONMENT = "item_environment";
+    const REQ_PARAM_REVISION = "revision";
     
     /**
      * @inheritdoc

@@ -9,6 +9,7 @@ use mata\arhistory\behaviors\HistoryBehavior;
 use matacms\controllers\module\Controller;
 use matacms\environment\models\ItemEnvironment;
 use matacms\environment\Module;
+use yii\db\BaseActiveRecord;
 
 class Bootstrap extends \mata\base\Bootstrap {
 
@@ -28,10 +29,30 @@ class Bootstrap extends \mata\base\Bootstrap {
 			$this->processSave($event->getMessage());
 		});
 
+		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function(Event $event) {
+
+			if (Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION)) {
+				$model = $event->sender;
+
+				$this->getRevision($model, Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION));
+			}
+			
+		});
 	}
 
 	private function shouldRun() {
 		return true;
+	}
+
+	private function getRevision($model, $revision) {
+
+		foreach ($model->getBehaviors() as $behavior) {
+			if (is_a($behavior, \mata\arhistory\behaviors\HistoryBehavior::class)) {
+				$model->setRevision($revision);
+				break;
+			}
+		}
+		
 	}
 
 	private function getPublishedRevision($model) {
@@ -41,7 +62,11 @@ class Bootstrap extends \mata\base\Bootstrap {
 		if ($module)
 			$liveEnvironment = $module->liveEnvironment;
 		else 
-			$module = Module::DEFAULT_LIVE_ENVIRONMENT;
+			$liveEnvironment = Module::DEFAULT_LIVE_ENVIRONMENT;
+
+		// When logged into the CMS, latest version should be shown
+		if (Yii::$app->user->isGuest == false)
+			return;
 
 		$ie = ItemEnvironment::find()->where([
 			"DocumentId" => $model->DocumentId,
@@ -58,7 +83,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function processSave($model) {
 
-		$status = \Yii::$app->getRequest()->post(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
+		$status = Yii::$app->getRequest()->post(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
 
 		if ($status == null)
 			return;
