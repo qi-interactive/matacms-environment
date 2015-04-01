@@ -15,7 +15,7 @@ class Html {
 
 		$retVal = BaseHtml::beginTag("div", [
 			"id" => $containerId,
-			"class" => "form-group"
+			"class" => "form-group submit-form-group"
 			]);
 
 		$retVal .= BaseHtml::hiddenInput(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
@@ -27,14 +27,14 @@ class Html {
 
 		$retVal .= BaseHtml::submitButton("Publish", [
 			"data-environment" => Yii::$app->getModule("environment")->getLiveEnvironment(),
-			"class" => "btn btn-primary"
+			"class" => "btn btn-primary publish-btn"
 			]);
 
 		$retVal .= BaseHtml::endTag("div");
 
 		\Yii::$app->view->registerJs("
 			$('#" . $containerId . " button').on('click', function() {
-			    $(this).siblings('input:hidden').val($(this).attr('data-environment'))
+				$(this).siblings('input:hidden').val($(this).attr('data-environment'))
 			})
 		", View::POS_READY);
 
