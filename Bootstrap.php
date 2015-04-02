@@ -58,6 +58,10 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 		$module = \Yii::$app->getModule("environment");
 
+
+		if ($this->hasEnvironmentBehavior($model) == false)
+			return;
+
 		$liveEnvironment = $module->getLiveEnvironment();
 
 		// When logged into the CMS, latest version should be shown
@@ -75,6 +79,15 @@ class Bootstrap extends \mata\base\Bootstrap {
 			foreach ($model->attributes() as $attribute)
 				$model->setAttribute($attribute, null);
 		}
+	}
+
+	private function hasEnvironmentBehavior($model) {
+		foreach ($model->getBehaviors() as $behavior) {
+			if (is_a($behavior, \matacms\environment\behaviors\EnvironmentBehavior::class))
+				return true;
+		}
+
+		return false;
 	}
 
 	private function processSave($model) {
