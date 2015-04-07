@@ -34,7 +34,12 @@ class EnvironmentBehavior extends Behavior {
    */
 
   public function getRevisionDelta() {
-    $currentRevision = $this->owner->getRevision()->Revision;
+    $currentRevision = $this->owner->getRevision();
+
+    if ($currentRevision == null)
+      return null;
+
+    $currentRevision = $currentRevision->Revision;
 
     $publishedRevision = ItemEnvironment::find()->where([
       "DocumentId" => $this->owner->getDocumentId(),
