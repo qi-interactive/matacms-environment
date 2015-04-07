@@ -102,7 +102,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 		$ie = new ItemEnvironment();
 		$ie->attributes = [
-		"DocumentId" => $model->getDocumentId(),
+		"DocumentId" => $model->getDocumentId()->getId(),
 		"Revision" => $model->getLatestRevision()->Revision,
 		"Status" => $status
 		];

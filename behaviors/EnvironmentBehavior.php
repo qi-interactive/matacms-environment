@@ -21,7 +21,7 @@ class EnvironmentBehavior extends Behavior {
       return;
 
     $ie = ItemEnvironment::find()->where([
-      "DocumentId" => $this->owner->getDocumentId(),
+      "DocumentId" => $this->owner->getDocumentId()->getId(),
       "Revision" => $revision->Revision
       ])->one();
 
@@ -34,10 +34,16 @@ class EnvironmentBehavior extends Behavior {
    */
 
   public function getRevisionDelta() {
+    $currentRevision = $this->owner->getRevision();
+
+
+    if ($currentRevision == null)
+      return null;
+
     $currentRevision = $this->owner->getRevision()->Revision;
 
     $publishedRevision = ItemEnvironment::find()->where([
-      "DocumentId" => $this->owner->getDocumentId(),
+      "DocumentId" => $this->owner->getDocumentId()->getId(),
       "Status" => Yii::$app->getModule("environment")->getLiveEnvironment(),
       ])->orderBy("Revision DESC")->one();
 
@@ -49,7 +55,7 @@ class EnvironmentBehavior extends Behavior {
 
   public function hasLiveVersion() {
     return ItemEnvironment::find()->where([
-      "DocumentId" => $this->owner->getDocumentId(),
+      "DocumentId" => $this->owner->getDocumentId()->getId(),
       "Status" => Yii::$app->getModule("environment")->getLiveEnvironment(),
       ])->orderBy("Revision DESC")->one() != null;
   }
