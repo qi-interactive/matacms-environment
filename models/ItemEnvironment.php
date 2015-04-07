@@ -30,7 +30,6 @@ class ItemEnvironment extends \mata\db\ActiveRecord
         return [
             [['DocumentId', 'Revision', 'Status'], 'required'],
             [['Revision'], 'integer'],
-            [['DocumentId'], 'string', 'max' => 64],
             [['Status'], 'string', 'max' => 32]
         ];
     }
