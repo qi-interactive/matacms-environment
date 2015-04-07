@@ -59,6 +59,9 @@ class Bootstrap extends \mata\base\Bootstrap {
 		$module = \Yii::$app->getModule("environment");
 
 
+		if ($module == null)
+			throw new \yii\base\InvalidConfigException("'environment' module pointing to matacms\\environment\\Module module needs to be set");
+
 		if ($this->hasEnvironmentBehavior($model) == false)
 			return;
 
