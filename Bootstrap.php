@@ -95,6 +95,9 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function processSave($model) {
 
+		if (is_object($model) == false || $this->hasEnvironmentBehavior($model) == false)
+			return;
+
 		$status = Yii::$app->getRequest()->post(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
 
 		if ($status == null)
