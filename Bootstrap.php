@@ -18,7 +18,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 		Event::on(HistoryBehavior::className(), HistoryBehavior::EVENT_REVISION_FETCHED, function(MessageEvent $event) {
 
 			if ($this->shouldRun())  {
-				$val = &$event->getMessage();
+				$val = $event->getMessage();
 				$this->getPublishedRevision($val);
 				$val = constant("NULL");
 			}
