@@ -24,7 +24,7 @@ class EnvironmentBehavior extends Behavior {
     $this->markedToRemove = true;
   }
 
-  public function getMarkedToRemove() {
+  public function getMarkedForRemoval() {
     return $this->markedToRemove;
   }
 
