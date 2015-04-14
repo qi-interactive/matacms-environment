@@ -52,4 +52,13 @@ class Module extends BaseModule {
 	public function getStageEnvironment() {
 	return $this->stageEnvironment ?: Module::DEFAULT_STAGE_ENVIRONMENT;		
 	}
+
+	public function hasEnvironmentBehavior($model) {
+		foreach ($model->getBehaviors() as $behavior) {
+			if (is_a($behavior, \matacms\environment\behaviors\EnvironmentBehavior::class))
+				return true;
+		}
+
+		return false;
+	}
 }

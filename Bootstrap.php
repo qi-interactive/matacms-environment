@@ -17,8 +17,11 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 		Event::on(HistoryBehavior::className(), HistoryBehavior::EVENT_REVISION_FETCHED, function(MessageEvent $event) {
 
-			if ($this->shouldRun()) 
-				$this->getPublishedRevision($event->getMessage());
+			if ($this->shouldRun())  {
+				$val = &$event->getMessage();
+				$this->getPublishedRevision($val);
+				$val = constant("NULL");
+			}
 		});
 
 		Event::on(Controller::class, Controller::EVENT_MODEL_UPDATED, function(\matacms\base\MessageEvent $event) {
@@ -56,6 +59,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function getPublishedRevision($model) {
 
+
 		$module = \Yii::$app->getModule("environment");
 
 
@@ -72,26 +76,32 @@ class Bootstrap extends \mata\base\Bootstrap {
 			return;
 
 		$ie = ItemEnvironment::find()->where([
-			"DocumentId" => $model->DocumentId,
+			"DocumentId" => $model->getDocumentId()->getId(),
 			"Status" => $liveEnvironment,
 			])->orderBy("Revision DESC")->one();
 
 		if ($ie) {
 			$model->setRevision($ie->Revision);
 		} else {
+
 			foreach ($model->attributes() as $attribute)
 				$model->setAttribute($attribute, null);
+
+			$model->markForRemoval();
+
 		}
 	}
 
 	private function hasEnvironmentBehavior($model) {
-		foreach ($model->getBehaviors() as $behavior) {
-			if (is_a($behavior, \matacms\environment\behaviors\EnvironmentBehavior::class))
-				return true;
-		}
 
-		return false;
+		$module = \Yii::$app->getModule("environment");
+
+		if ($module == null)
+			throw new \yii\base\InvalidConfigException("'environment' module pointing to matacms\\environment\\Module module needs to be set");
+
+		return $module->hasEnvironmentBehavior($model);
 	}
+	
 
 	private function processSave($model) {
 
