@@ -44,7 +44,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 	}
 
 	private function shouldRun() {
-		return false;
+		return true;
 	}
 
 	private function getRevision($model, $revision) {
@@ -80,6 +80,8 @@ class Bootstrap extends \mata\base\Bootstrap {
 			"Status" => $liveEnvironment,
 			])->orderBy("Revision DESC")->one();
 
+
+
 		if ($ie) {
 			$model->setRevision($ie->Revision);
 		} else {
@@ -90,6 +92,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 			$model->markForRemoval();
 
 		}
+		
 	}
 
 	private function hasEnvironmentBehavior($model) {
@@ -113,11 +116,19 @@ class Bootstrap extends \mata\base\Bootstrap {
 		if ($status == null)
 			return;
 
+		$module = \Yii::$app->getModule("environment");
+		
+		$liveEnvironment = $module->getLiveEnvironment();
+
+		$supersededEnvironment = $module->getSupersededEnvironment();
+
+		ItemEnvironment::updateAll(['Status' => $supersededEnvironment], 'DocumentId = :documentId AND Status = :status', [':documentId' => $model->getDocumentId()->getId(), ':status' => $liveEnvironment]);
+
 		$ie = new ItemEnvironment();
 		$ie->attributes = [
-		"DocumentId" => $model->getDocumentId()->getId(),
-		"Revision" => $model->getLatestRevision()->Revision,
-		"Status" => $status
+			"DocumentId" => $model->getDocumentId()->getId(),
+			"Revision" => $model->getLatestRevision()->Revision,
+			"Status" => $status
 		];
 
 		if (!$ie->save())

@@ -34,7 +34,8 @@ class Module extends BaseModule {
 
 	const DEFAULT_LIVE_ENVIRONMENT = "LIVE";
 	const DEFAULT_STAGE_ENVIRONMENT = "DRAFT";
-
+	const DEFAULT_SUPERSEDED_ENVIRONMENT = "SUPERSEDED";
+	
 	public function init() {
 
 		if ($this->liveEnvironment == null)
@@ -50,7 +51,11 @@ class Module extends BaseModule {
 	}
 
 	public function getStageEnvironment() {
-	return $this->stageEnvironment ?: Module::DEFAULT_STAGE_ENVIRONMENT;		
+		return $this->stageEnvironment ?: Module::DEFAULT_STAGE_ENVIRONMENT;		
+	}
+
+	public function getSupersededEnvironment() {
+		return Module::DEFAULT_SUPERSEDED_ENVIRONMENT;		
 	}
 
 	public function hasEnvironmentBehavior($model) {
