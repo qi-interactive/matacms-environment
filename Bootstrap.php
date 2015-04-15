@@ -44,7 +44,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 	}
 
 	private function shouldRun() {
-		return true;
+		return false;
 	}
 
 	private function getRevision($model, $revision) {
