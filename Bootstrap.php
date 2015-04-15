@@ -59,9 +59,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function getPublishedRevision($model) {
 
-
 		$module = \Yii::$app->getModule("environment");
-
 
 		if ($module == null)
 			throw new \yii\base\InvalidConfigException("'environment' module pointing to matacms\\environment\\Module module needs to be set");
@@ -75,12 +73,16 @@ class Bootstrap extends \mata\base\Bootstrap {
 		if (Yii::$app->user->isGuest == false)
 			return;
 
+		if ($model->getDocumentId()->getPk() == null) {
+			\Yii::warning(sprintf("Trying to get environment for model without PK. Make sure you select it : %s", get_class($model)), 
+				__METHOD__);
+			return;
+		}
+
 		$ie = ItemEnvironment::find()->where([
 			"DocumentId" => $model->getDocumentId()->getId(),
 			"Status" => $liveEnvironment,
 			])->orderBy("Revision DESC")->one();
-
-
 
 		if ($ie) {
 			$model->setRevision($ie->Revision);
