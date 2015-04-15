@@ -92,7 +92,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 			$model->markForRemoval();
 
 		}
-		
+
 	}
 
 	private function hasEnvironmentBehavior($model) {
@@ -122,7 +122,9 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 		$supersededEnvironment = $module->getSupersededEnvironment();
 
-		ItemEnvironment::updateAll(['Status' => $supersededEnvironment], 'DocumentId = :documentId AND Status = :status', [':documentId' => $model->getDocumentId()->getId(), ':status' => $liveEnvironment]);
+		if($status == $liveEnvironment) {
+			ItemEnvironment::updateAll(['Status' => $supersededEnvironment], 'DocumentId = :documentId AND Status = :status', [':documentId' => $model->getDocumentId()->getId(), ':status' => $liveEnvironment]);
+		}
 
 		$ie = new ItemEnvironment();
 		$ie->attributes = [
