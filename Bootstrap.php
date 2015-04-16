@@ -18,9 +18,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 		Event::on(HistoryBehavior::className(), HistoryBehavior::EVENT_REVISION_FETCHED, function(MessageEvent $event) {
 
 			if ($this->shouldRun())  {
-				$val = $event->getMessage();
-				$this->getPublishedRevision($val);
-				$val = constant("NULL");
+				$this->getPublishedRevision($event->getMessage());
 			}
 		});
 
@@ -59,6 +57,10 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function getPublishedRevision($model) {
 
+		// When logged into the CMS, latest version should be shown
+		if (Yii::$app->user->isGuest == false)
+			return;
+
 		$module = \Yii::$app->getModule("environment");
 
 		if ($module == null)
@@ -69,9 +71,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 		$liveEnvironment = $module->getLiveEnvironment();
 
-		// When logged into the CMS, latest version should be shown
-		if (Yii::$app->user->isGuest == false)
-			return;
+		
 
 		if ($model->getDocumentId()->getPk() == null) {
 			\Yii::warning(sprintf("Trying to get environment for model without PK. Make sure you select it : %s", get_class($model)), 
