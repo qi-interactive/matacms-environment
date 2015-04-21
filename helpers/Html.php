@@ -45,6 +45,25 @@ class Html {
 				var today = new Date();
 				return UTCDate(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), today.getUTCHours(), today.getUTCMinutes(), today.getUTCSeconds(), 0);
 			}
+
+			var setButtons = function(publicationDateField) {
+				var dateValue = publicationDateField.val();
+					
+				var isEmpty = (dateValue === null || dateValue === undefined || dateValue == [] || dateValue === '');
+				
+				if(isEmpty) {
+					$('#" . $containerId . " button[data-environment=\"LIVE\"').hide();
+				} else {
+
+					var isFutureDate = moment(dateValue).format('YYYY-MM-DD HH:mm') > moment().format('YYYY-MM-DD HH:mm');
+
+					if(isFutureDate) {
+						$('#" . $containerId . " button[data-environment=\"LIVE\"').removeClass('publish-btn').addClass('schedule-btn').text('SCHEDULE').show();
+					} else {
+						$('#" . $containerId . " button[data-environment=\"LIVE\"').removeClass('schedule-btn').addClass('publish-btn').text('PUBLISH').show();
+					}							
+				}
+			}
 			
 			var watchSubmitButtons = function() {
 				var publicationDateField = $('[id*=\"publicationdate\"]');
@@ -52,27 +71,15 @@ class Html {
 				if(publicationDateField !== null || publicationDateField !== undefined) {
 	
 					publicationDateField.on('change', function() {
-						var dateValue = publicationDateField.val();
-					
-						var isEmpty = (dateValue === null || dateValue === undefined || dateValue == [] || dateValue === '');
-						
-						if(isEmpty) {
-							$('#" . $containerId . " button[data-environment=\"LIVE\"').hide();
-						} else {
-
-							var isFutureDate = moment(dateValue).format('YYYY-MM-DD HH:mm') > moment().format('YYYY-MM-DD HH:mm');
-
-							if(isFutureDate) {
-								$('#" . $containerId . " button[data-environment=\"LIVE\"').removeClass('publish-btn').addClass('schedule-btn').text('SCHEDULE').show();
-							} else {
-								$('#" . $containerId . " button[data-environment=\"LIVE\"').removeClass('schedule-btn').addClass('publish-btn').text('PUBLISH').show();
-							}							
-						}
-					}).change();
+						setButtons(publicationDateField);
+					});
 				}
 			}
 
 			watchSubmitButtons();
+			setButtons($('[id*=\"publicationdate\"]'));
+
+			
 			
 
 			$('#" . $containerId . " button').on('click', function() {
