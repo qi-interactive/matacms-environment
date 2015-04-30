@@ -110,10 +110,13 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function processSave($model) {
 
+
 		if (is_object($model) == false || $this->hasEnvironmentBehavior($model) == false)
 			return;
 
 		$status = Yii::$app->getRequest()->post(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
+
+
 
 		if ($status == null)
 			return;
@@ -124,9 +127,10 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 		$supersededEnvironment = $module->getSupersededEnvironment();
 
-		if($status == $liveEnvironment) {
+		if ($status == $liveEnvironment) {
 			ItemEnvironment::updateAll(['Status' => $supersededEnvironment], 'DocumentId = :documentId AND Status = :status', [':documentId' => $model->getDocumentId()->getId(), ':status' => $liveEnvironment]);
 		}
+
 
 		$ie = new ItemEnvironment();
 		$ie->attributes = [
@@ -134,7 +138,6 @@ class Bootstrap extends \mata\base\Bootstrap {
 			"Revision" => $model->getLatestRevision()->Revision,
 			"Status" => $status
 		];
-
 		if (!$ie->save())
 			throw new \yii\web\ServerErrorHttpException($ie->getTopError());
 
