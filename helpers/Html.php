@@ -70,17 +70,15 @@ class Html {
 
 				if(publicationDateField !== null || publicationDateField !== undefined) {
 	
-					publicationDateField.on('change', function() {
+					publicationDateField.on('change dp.change', function() {
+						console.log('change');
 						setButtons(publicationDateField);
 					});
 				}
 			}
 
 			watchSubmitButtons();
-			setButtons($('[id*=\"publicationdate\"]'));
-
-			
-			
+			setButtons($('[id*=\"publicationdate\"]'));			
 
 			$('#" . $containerId . " button').on('click', function() {
 				$(this).siblings('input:hidden').val($(this).attr('data-environment'))
