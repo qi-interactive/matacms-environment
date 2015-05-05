@@ -6,6 +6,7 @@ use Yii;
 use yii\base\Event;
 use mata\base\MessageEvent;
 use mata\arhistory\behaviors\HistoryBehavior;
+use mata\helpers\BehaviorHelper;
 use matacms\controllers\module\Controller;
 use matacms\environment\models\ItemEnvironment;
 use matacms\environment\Module;
@@ -47,11 +48,8 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	private function getRevision($model, $revision) {
 
-		foreach ($model->getBehaviors() as $behavior) {
-			if (is_a($behavior, \mata\arhistory\behaviors\HistoryBehavior::class)) {
-				$model->setRevision($revision);
-				break;
-			}
+		if(BehaviorHelper::hasBehavior($model, \mata\arhistory\behaviors\HistoryBehavior::class)) {
+			$model->setRevision($revision);
 		}
 	}
 
