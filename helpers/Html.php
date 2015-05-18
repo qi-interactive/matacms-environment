@@ -35,6 +35,8 @@ class Html {
 
 		MomentAsset::register(\Yii::$app->controller->View);
 
+		$formId = $options['formId'];
+
 		\Yii::$app->view->registerJs("
 			
 			var UTCDate = function() {
@@ -81,8 +83,23 @@ class Html {
 			setButtons($('[id*=\"publicationdate\"]'));			
 
 			$('#" . $containerId . " button').on('click', function() {
-				$(this).siblings('input:hidden').val($(this).attr('data-environment'))
-			})
+				$(this).siblings('input:hidden').val($(this).attr('data-environment'));
+			});
+
+
+			
+			var form = $('#$formId'),
+			isSubmitted = false;
+
+			form.on('submit', function(e) {
+				console.log(0, isSubmitted);
+				if(!isSubmitted) {
+					isSubmitted = form.yiiActiveForm('submitForm');
+					return isSubmitted;
+				}	
+				$('#$containerId button').attr('disabled', 'disabled');
+				return false;			
+			});
 		", View::POS_READY);
 
 
