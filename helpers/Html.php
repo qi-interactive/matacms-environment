@@ -92,7 +92,6 @@ class Html {
 			isSubmitted = false;
 
 			form.on('submit', function(e) {
-				console.log(0, isSubmitted);
 				if(!isSubmitted) {
 					isSubmitted = form.yiiActiveForm('submitForm');
 					return isSubmitted;
