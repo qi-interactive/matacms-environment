@@ -1,6 +1,6 @@
 {
-    "name": "MATA Environment",
-    "description": "Manages environment (PREVIEW, LIVE) for MATA",
+    "name": "MATACMS Environment",
+    "description": "Manages environment (DRAFT, LIVE) for MATACMS",
     "icon" : "/images/module-icon.svg",
-    "version" : 1.0
+    "version" : "1.0.0-alpha"
 }

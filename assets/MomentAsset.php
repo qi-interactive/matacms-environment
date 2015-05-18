@@ -1,16 +1,15 @@
 <?php
+ 
+/**
+ * @link http://www.matacms.com/
+ * @copyright Copyright (c) 2015 Qi Interactive Limited
+ * @license http://www.matacms.com/license/
+ */
 
 namespace matacms\environment\assets;
 
 use yii\web\AssetBundle;
 
-/**
- * Class MomentAsset
- *
- * @author Roman Zhuravlev <zhuravljov@gmail.com>
- *
- * @see http://momentjs.com/
- */
 class MomentAsset extends AssetBundle
 {
     public $sourcePath = '@vendor/bower/moment';
@@ -24,4 +23,5 @@ class MomentAsset extends AssetBundle
             $this->js = ['min/moment-with-locales.min.js'];
         }
     }
+    
 }

@@ -1,21 +1,16 @@
 <?php
 
-/*
- * This file is part of the mata project.
- *
- * (c) mata project <http://github.com/mata/>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
+/**
+ * @link http://www.matacms.com/
+ * @copyright Copyright (c) 2015 Qi Interactive Limited
+ * @license http://www.matacms.com/license/
  */
 
 use yii\db\Schema;
 use mata\user\migrations\Migration;
 
-/**
- * @author Dmitry Erofeev <dmeroff@gmail.com
- */
 class m150312_183259_init extends Migration {
+    
     public function safeUp() {
         $this->createTable('{{%matacms_itemenvironment}}', [
             'DocumentId'   => Schema::TYPE_STRING . '(64) NOT NULL',
@@ -29,4 +24,5 @@ class m150312_183259_init extends Migration {
     public function safeDown() {
         $this->dropTable('{{%matacms_itemenvironment}}');
     }
+
 }
