@@ -35,7 +35,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 		});
 
 		// When logged into the CMS, latest version should be shown
-		if ($this->shouldRun && Yii::$app->user->isGuest) {
+		if ($this->shouldRun() && Yii::$app->user->isGuest) {
 			Event::on(ActiveQuery::class, ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT, function(Event $event) {
 
 				$activeQuery = $event->sender;
