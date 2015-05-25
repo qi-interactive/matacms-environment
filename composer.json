@@ -8,6 +8,7 @@
     },
     "minimum-stability": "stable",
     "require": {
+        "matacms/matacms-base": "~1.0.7-alpha",
         "mata/mata-ar-history": "~1.0.0-alpha",
         "bower-asset/moment": "2.*"
     },
