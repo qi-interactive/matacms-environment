@@ -25,6 +25,10 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
+## TBC, May 26, 2015
+
+- Added check for console application in Bootstrap
+
 ## 1.0.1-alpha, May 26, 2015
 
 - Added dependency on matacms-base ~1.0.7-alpha where [[ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT]] was added
