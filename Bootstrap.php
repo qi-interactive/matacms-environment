@@ -19,12 +19,16 @@ use matacms\environment\Module;
 use yii\db\BaseActiveRecord;
 use matacms\db\ActiveQuery;
 use yii\web\HttpException;
+use yii\console\Application as ConsoleApplication;
 
 class Bootstrap extends \mata\base\Bootstrap {
 
 	private static $envQueryCount = -1;
 
 	public function bootstrap($app) {
+
+		if ($app instanceof ConsoleApplication)
+			return;
 
 		Event::on(Controller::class, Controller::EVENT_MODEL_UPDATED, function(\matacms\base\MessageEvent $event) {
 			$this->processSave($event->getMessage());
