@@ -87,8 +87,9 @@ class Bootstrap extends \mata\base\Bootstrap {
 		  */   
 		 $hasEnvironmentRecords = ItemEnvironment::find()->where(["DocumentId" => $documentId])->count();
 
-		 if ($hasEnvironmentRecords == false)
-		 	return;
+		 // TODO TOMORROW
+		 // if ($hasEnvironmentRecords == false)
+		 // 	return;
 
 		 $activeQuery->innerJoin("matacms_itemenvironment AS " . $alias, $alias . ".DocumentId = " . $documentId);
 		 $activeQuery->andWhere($alias . ".Revision = (SELECT Revision FROM matacms_itemenvironment " . $alias . "rev WHERE . " . $alias . "rev.`DocumentId` = " . $alias . ".DocumentId 
