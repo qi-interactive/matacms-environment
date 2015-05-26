@@ -1,21 +1,23 @@
 {
     "name": "matacms/matacms-environment",
-    "description": "Media Management for MATA",
-    "keywords": ["yii2", "mata-environment", "environment", "mata", "preview"],
+    "description": "Manages environment (DRAFT, LIVE) for MATACMS",
+    "keywords": ["yii2", "matacms-environment", "environment", "mata"],
     "type": "yii2-extension",
     "license": "MIT",
     "support": {
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "require": {
-        "codeception/codeception": "*",
-        "yiisoft/yii2-codeception": "*",
-        "yiisoft/yii2-faker": "*",
-        "mata/mata-ar-history": "dev-development"
+        "matacms/matacms-base": "~1.0.7-alpha",
+        "mata/mata-ar-history": "~1.0.0-alpha",
+        "bower-asset/moment": "2.*"
     },
     "autoload": {
         "psr-4": {
             "matacms\\environment\\": ""
         }
+    },
+    "extra": {
+        "bootstrap": "matacms\\environment\\Bootstrap"
     }
 }
