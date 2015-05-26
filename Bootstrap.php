@@ -41,8 +41,9 @@ class Bootstrap extends \mata\base\Bootstrap {
 				$activeQuery = $event->sender;
 				$modelClass = $activeQuery->modelClass;
 				$sampleModelObject = new $modelClass;
+				$documentIdBase = $sampleModelObject->getDocumentId();
 				$tableAlias = $activeQuery->getQueryTableName($activeQuery)[0];
-				$documentIdBase = str_replace("\\", "\\\\\\",  $activeQuery->modelClass);
+				
 
 				if (count($modelClass::primaryKey()) > 1) {
 					throw new HttpException(500, sprintf("Composite keys are not handled yet. Table alias is %s", $tableAlias));
@@ -53,10 +54,10 @@ class Bootstrap extends \mata\base\Bootstrap {
 				if ($activeQuery->join)
 					foreach ($activeQuery->join as $join) {
 						$tableToJoin = $join[1];
-					 	$this->addItemEnvironmentJoin($activeQuery, $tableToJoin  . ".DocumentId");
+					 	$this->addItemEnvironmentJoin($activeQuery, $tableToJoin  . ".DocumentId", $documentIdBase);
 					}
 
-				$this->addItemEnvironmentJoin($activeQuery, "CONCAT('" . $documentIdBase . "-', " . $tableAlias . ".`" . $tablePrimaryKey . "`)");
+				$this->addItemEnvironmentJoin($activeQuery, "CONCAT('" . $documentIdBase . "', " . $tableAlias . ".`" . $tablePrimaryKey . "`)", $documentIdBase);
 
 			});
 		}
@@ -68,7 +69,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 			});
 	}
 
-	private function addItemEnvironmentJoin($activeQuery, $documentId) {
+	private function addItemEnvironmentJoin($activeQuery, $documentId, $documentIdBase) {
 
 		$module = \Yii::$app->getModule("environment");
 
@@ -76,8 +77,10 @@ class Bootstrap extends \mata\base\Bootstrap {
 			throw new \yii\base\InvalidConfigException("'environment' module pointing to matacms\\environment\\Module module needs to be set");
 
 		$liveEnvironment = $module->getLiveEnvironment();
-
 		$alias = $this->getTableAlias();
+
+		// TODO This encoding happens in Yii, use what they're offering. E.g. it is used in the call on line 91
+		$documentId = str_replace("\\", "\\\\\\",  $documentId);
 
 		 /**
 		  * We need to check if a given [[documentId]] is present in the [[ItemEnvironment]] table.
@@ -85,11 +88,10 @@ class Bootstrap extends \mata\base\Bootstrap {
 		  * This check cannot be done with [[BehaviorHelper::hasBehavior]], as we not always have
 		  * the model class name, but always have the [[documentId]]
 		  */   
-		 $hasEnvironmentRecords = ItemEnvironment::find()->where(["DocumentId" => $documentId])->count();
+		 $hasEnvironmentRecords = ItemEnvironment::find()->where(['like', 'DocumentId', $documentIdBase])->limit(1)->one();
 
-		 // TODO TOMORROW
-		 // if ($hasEnvironmentRecords == false)
-		 // 	return;
+		 if ($hasEnvironmentRecords == null)
+		 	return;
 
 		 $activeQuery->innerJoin("matacms_itemenvironment AS " . $alias, $alias . ".DocumentId = " . $documentId);
 		 $activeQuery->andWhere($alias . ".Revision = (SELECT Revision FROM matacms_itemenvironment " . $alias . "rev WHERE . " . $alias . "rev.`DocumentId` = " . $alias . ".DocumentId 

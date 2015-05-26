@@ -25,7 +25,8 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
-## TO BE RELEASED
+## 1.0.1-alpha, May 26, 2015
+
 - Added dependency on matacms-base ~1.0.7-alpha where [[ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT]] was added
 - Completely rewrote getting live versions, from iterating through fetched models to injecting conditions in SQL command
 - Code cleanup, especially in [[Bootstrap]]
