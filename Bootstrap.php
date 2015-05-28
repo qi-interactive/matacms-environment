@@ -106,14 +106,15 @@ class Bootstrap extends \mata\base\Bootstrap {
 		if (is_object($model) == false || $this->hasEnvironmentBehavior($model) == false)
 			return;
 
-		$status = Yii::$app->getRequest()->post(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT);
-
-		if ($status == null)
-			return;
-
 		$module = \Yii::$app->getModule("environment");
-		
+
 		$liveEnvironment = $module->getLiveEnvironment();
+
+		/**
+		 * Some core models don't have versions, but use media which have versions.
+		 * Assume in such case that we are publishing straight away
+		 */
+		$status = Yii::$app->getRequest()->post(ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT, $liveEnvironment);
 
 		$supersededEnvironment = $module->getSupersededEnvironment();
 
