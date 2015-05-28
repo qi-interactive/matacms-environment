@@ -25,7 +25,7 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
-## TBC, May 26, 2015
+## 1.0.2-alpha, May 28, 2015
 
 - Added check for console application in Bootstrap
 - Added handling of logged-in users to get latest versions of records
