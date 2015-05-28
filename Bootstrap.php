@@ -17,9 +17,8 @@ use matacms\controllers\module\Controller;
 use matacms\environment\models\ItemEnvironment;
 use matacms\environment\Module;
 use yii\db\BaseActiveRecord;
-use matacms\db\ActiveQuery;
+use mata\db\ActiveQuery;
 use yii\web\HttpException;
-use yii\console\Application as ConsoleApplication;
 
 class Bootstrap extends \mata\base\Bootstrap {
 
@@ -27,19 +26,16 @@ class Bootstrap extends \mata\base\Bootstrap {
 
 	public function bootstrap($app) {
 
-		if ($app instanceof ConsoleApplication)
-			return;
-
-		Event::on(Controller::class, Controller::EVENT_MODEL_UPDATED, function(\matacms\base\MessageEvent $event) {
-			$this->processSave($event->getMessage());
+		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_INSERT, function(Event $event) {
+			$this->processSave($event->sender);
 		});
 
-		Event::on(Controller::class, Controller::EVENT_MODEL_CREATED, function(\matacms\base\MessageEvent $event) {
-			$this->processSave($event->getMessage());
+		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_UPDATE, function(Event $event) {
+			$this->processSave($event->sender);
 		});
 
 		// When logged into the CMS, latest version should be shown
-		if ($this->shouldRun() && Yii::$app->user->isGuest) {
+		if ($this->shouldRun()) {
 			Event::on(ActiveQuery::class, ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT, function(Event $event) {
 
 				$activeQuery = $event->sender;
@@ -48,7 +44,6 @@ class Bootstrap extends \mata\base\Bootstrap {
 				$documentIdBase = $sampleModelObject->getDocumentId();
 				$tableAlias = $activeQuery->getQueryTableName($activeQuery)[0];
 				
-
 				if (count($modelClass::primaryKey()) > 1) {
 					throw new HttpException(500, sprintf("Composite keys are not handled yet. Table alias is %s", $tableAlias));
 				}
@@ -61,7 +56,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 					 	$this->addItemEnvironmentJoin($activeQuery, $tableToJoin  . ".DocumentId", $documentIdBase);
 					}
 
-				$this->addItemEnvironmentJoin($activeQuery, "CONCAT('" . $documentIdBase . "', " . $tableAlias . ".`" . $tablePrimaryKey . "`)", $documentIdBase);
+				$this->addItemEnvironmentJoin($activeQuery, "CONCAT('" . $documentIdBase . "', " . $tableAlias . "." . $tablePrimaryKey . ")", $documentIdBase);
 
 			});
 		}
@@ -74,33 +69,46 @@ class Bootstrap extends \mata\base\Bootstrap {
 	}
 
 	private function addItemEnvironmentJoin($activeQuery, $documentId, $documentIdBase) {
-
+		// && Yii::$app->user->isGuest
 		$module = \Yii::$app->getModule("environment");
 
 		if ($module == null)
 			throw new \yii\base\InvalidConfigException("'environment' module pointing to matacms\\environment\\Module module needs to be set");
 
-		$liveEnvironment = $module->getLiveEnvironment();
+		/**
+		 * We need to check if a given [[documentId]] is present in the [[ItemEnvironment]] table.
+		 * If is it not, it means that environments are not used for a given [[documentId]]
+		 * This check cannot be done with [[BehaviorHelper::hasBehavior]], as we not always have
+		 * the model class name, but always have the [[documentId]]
+		 */   
+		$hasEnvironmentRecords = ItemEnvironment::find()->where(['like', 'DocumentId', $documentIdBase])->limit(1)->one();
+
+		if ($hasEnvironmentRecords == null)
+			return;
+
 		$alias = $this->getTableAlias();
 
 		// TODO This encoding happens in Yii, use what they're offering. E.g. it is used in the call on line 91
 		$documentId = str_replace("\\", "\\\\\\",  $documentId);
+		
+		if ($activeQuery->select == null)
+			$activeQuery->addSelect(["*", $alias . ".Revision"]);
+		else 
+			$activeQuery->addSelect($alias . ".Revision");
 
-		 /**
-		  * We need to check if a given [[documentId]] is present in the [[ItemEnvironment]] table.
-		  * If is it not, it means that environments are not used for a given [[documentId]]
-		  * This check cannot be done with [[BehaviorHelper::hasBehavior]], as we not always have
-		  * the model class name, but always have the [[documentId]]
-		  */   
-		 $hasEnvironmentRecords = ItemEnvironment::find()->where(['like', 'DocumentId', $documentIdBase])->limit(1)->one();
+		$activeQuery->innerJoin("matacms_itemenvironment " . $alias, "`" . $alias . "`.`DocumentId` = " . $documentId);
 
-		 if ($hasEnvironmentRecords == null)
-		 	return;
+		 // TODO refactor and use Query!
+		 if (Yii::$app->user->isGuest) {
+		 	$liveEnvironment = $module->getLiveEnvironment();
 
-		 $activeQuery->innerJoin("matacms_itemenvironment AS " . $alias, $alias . ".DocumentId = " . $documentId);
-		 $activeQuery->andWhere($alias . ".Revision = (SELECT Revision FROM matacms_itemenvironment " . $alias . "rev WHERE . " . $alias . "rev.`DocumentId` = " . $alias . ".DocumentId 
+		 	$activeQuery->andWhere($alias . ".Revision = (SELECT Revision FROM matacms_itemenvironment " . $alias . "rev WHERE . " . $alias . "rev.`DocumentId` = " . $alias . ".DocumentId 
 		 	 			 AND " . $alias . "rev.`Status` = '" . $liveEnvironment . "' ORDER BY " . $alias . ".Revision DESC LIMIT 1)");
-		 	
+		 	} else {
+		 		$activeQuery->andWhere($alias . ".Revision = (SELECT Revision FROM matacms_itemenvironment " . $alias . "rev WHERE " . $alias . "rev.`DocumentId` = " . $alias . ".DocumentId 
+		 			 			 ORDER BY " . $alias . ".Revision DESC LIMIT 1)");
+		 		
+		 	}
 	}
 
 	private function getTableAlias() {
@@ -117,6 +125,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 	}
 	
 	private function processSave($model) {
+
 		if (is_object($model) == false || 
 			BehaviorHelper::hasBehavior($model, \mata\arhistory\behaviors\HistoryBehavior::class) == false)
 			return;

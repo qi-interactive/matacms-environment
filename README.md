@@ -28,6 +28,7 @@ Changelog
 ## TBC, May 26, 2015
 
 - Added check for console application in Bootstrap
+- Added handling of logged-in users to get latest versions of records
 
 ## 1.0.1-alpha, May 26, 2015
 
