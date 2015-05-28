@@ -34,6 +34,10 @@ class Bootstrap extends \mata\base\Bootstrap {
 			$this->processSave($event->sender);
 		});
 
+		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function(Event $event) {
+			// print_r($event->sender->attributes);
+		});
+
 		// When logged into the CMS, latest version should be shown
 		if ($this->shouldRun()) {
 			Event::on(ActiveQuery::class, ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT, function(Event $event) {
