@@ -130,10 +130,13 @@ class Bootstrap extends \mata\base\Bootstrap {
 	
 	private function processSave($model) {
 
+		codecept_debug(get_class($model));
+
 		if (is_object($model) == false || 
 			BehaviorHelper::hasBehavior($model, \mata\arhistory\behaviors\HistoryBehavior::class) == false)
 			return;
 
+		$module = \Yii::$app->getModule("environment");
 		$liveEnvironment = $module->getLiveEnvironment();
 
 		/**
