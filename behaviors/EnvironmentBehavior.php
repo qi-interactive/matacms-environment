@@ -14,22 +14,6 @@ use matacms\environment\models\ItemEnvironment;
 
 class EnvironmentBehavior extends Behavior {
 
-    /**
-    * When the model should be null, Environment::Bootstrap will set this to true. 
-    * In turn matacms\db\ActiveQuery will nullify the object based on the value
-    * of _markedToRemove;
-    */ 
-   
-    private $markedToRemove = false;
-
-    public function markForRemoval() {
-        $this->markedToRemove = true;
-    }
-
-    public function getMarkedForRemoval() {
-        return $this->markedToRemove;
-    }
-
     public function getVersionStatus() {
         $revision = $this->owner->getRevision();
 
@@ -48,7 +32,6 @@ class EnvironmentBehavior extends Behavior {
     /**
      * Return the difference between live version and the current version
      */
-
     public function getRevisionDelta() {
         $currentRevision = $this->owner->getRevision();
 

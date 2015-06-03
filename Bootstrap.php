@@ -33,47 +33,47 @@ class Bootstrap extends \mata\base\Bootstrap {
 		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_UPDATE, function(Event $event) {
 			$this->processSave($event->sender);
 		});
+		
+		Event::on(ActiveQuery::class, ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT, function(Event $event) {
 
-		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function(Event $event) {
-			// print_r($event->sender->attributes);
-		});
-
-		// When logged into the CMS, latest version should be shown
-		if ($this->shouldRun()) {
-			Event::on(ActiveQuery::class, ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT, function(Event $event) {
-
+			// When logged into the CMS, latest version should be shown
+			if (\Yii::$app->user->isGuest) {
+				
 				$activeQuery = $event->sender;
 				$modelClass = $activeQuery->modelClass;
 				$sampleModelObject = new $modelClass;
-				$documentIdBase = $sampleModelObject->getDocumentId();
+				$documentIdBase = $sampleModelObject->getDocumentId()->getId();
 				$tableAlias = $activeQuery->getQueryTableName($activeQuery)[0];
-				
+
 				if (count($modelClass::primaryKey()) > 1) {
 					throw new HttpException(500, sprintf("Composite keys are not handled yet. Table alias is %s", $tableAlias));
 				}
 
 				$tablePrimaryKey = $modelClass::primaryKey()[0];
 
-				if ($activeQuery->join)
-					foreach ($activeQuery->join as $join) {
-						$tableToJoin = $join[1];
-					 	$this->addItemEnvironmentJoin($activeQuery, $tableToJoin  . ".DocumentId", $documentIdBase);
-					}
+				// if ($activeQuery->join)
+				// 	foreach ($activeQuery->join as $join) {
+				// 		$tableToJoin = $join[1];
+				// 	 	$this->addItemEnvironmentJoin($activeQuery, $tableToJoin  . ".DocumentId", $documentIdBase);
+				// 	}
 
 				$this->addItemEnvironmentJoin($activeQuery, "CONCAT('" . $documentIdBase . "', " . $tableAlias . "." . $tablePrimaryKey . ")", $documentIdBase);
+			} 
+		});
+	
+		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function(Event $event) {
+			
+			if (Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION)) {
+				$model = $event->sender;
+				$this->getRevision($model, Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION));
+			}
 
-			});
-		}
+		});
 
-		if (Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION))
-			Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function(Event $event) {
-					$model = $event->sender;
-					$this->getRevision($model, Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION));
-			});
 	}
 
 	private function addItemEnvironmentJoin($activeQuery, $documentId, $documentIdBase) {
-		// && Yii::$app->user->isGuest
+
 		$module = \Yii::$app->getModule("environment");
 
 		if ($module == null)
@@ -120,7 +120,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 	}
 
 	private function shouldRun() {
-		return true;
+		return Yii::$app->user->isGuest;
 	}
 
 	private function getRevision($model, $revision) {
@@ -129,8 +129,6 @@ class Bootstrap extends \mata\base\Bootstrap {
 	}
 	
 	private function processSave($model) {
-
-		codecept_debug(get_class($model));
 
 		if (is_object($model) == false || 
 			BehaviorHelper::hasBehavior($model, \mata\arhistory\behaviors\HistoryBehavior::class) == false)
