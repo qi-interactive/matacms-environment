@@ -37,7 +37,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 		Event::on(ActiveQuery::class, ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT, function(Event $event) {
 
 			// When logged into the CMS, latest version should be shown
-			if (\Yii::$app->user->isGuest) {
+			if (!is_a(\Yii::$app, "yii\console\Application") && \Yii::$app->user->isGuest) {
 				
 				$activeQuery = $event->sender;
 				$modelClass = $activeQuery->modelClass;
@@ -63,7 +63,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 	
 		Event::on(BaseActiveRecord::class, BaseActiveRecord::EVENT_AFTER_FIND, function(Event $event) {
 			
-			if (Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION)) {
+			if (!is_a(\Yii::$app, "yii\console\Application") && Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION)) {
 				$model = $event->sender;
 				$this->getRevision($model, Yii::$app->getRequest()->get(ItemEnvironment::REQ_PARAM_REVISION));
 			}

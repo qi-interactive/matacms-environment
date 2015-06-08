@@ -28,6 +28,8 @@ class Module extends BaseModule {
 	
 	public function init() {
 
+		parent::init();
+
 		if ($this->liveEnvironment == null)
 			$this->liveEnvironment = self::DEFAULT_LIVE_ENVIRONMENT;
 	}
