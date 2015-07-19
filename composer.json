@@ -6,7 +6,7 @@
     "license": "MIT",
     "support": {
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
         "matacms/matacms-base": "dev-development",
         "mata/mata-ar-history": "~1.0.0-alpha",
