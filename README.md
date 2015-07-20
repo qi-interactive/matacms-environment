@@ -10,7 +10,7 @@ Environment module manages environment (DRAFT, LIVE) for entities.
 Installation
 ------------
 
-- Add the module using composer: 
+- Add the module using composer:
 
 ```json
 "matacms/matacms-environment": "~1.0.0"
@@ -24,6 +24,10 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 
 Changelog
 ---------
+
+## 1.0.5-alpha, June 20, 2015
+
+- Added dependency on matacms-base ~1.0-alpha
 
 ## 1.0.4-alpha, June 8, 2015
 
