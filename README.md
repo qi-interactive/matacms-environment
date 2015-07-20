@@ -25,6 +25,10 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
+## 1.0.5.1-alpha, June 20, 2015
+
+- Fixed dependency on matacms-base ~1.1-alpha
+
 ## 1.0.5-alpha, June 20, 2015
 
 - Added dependency on matacms-base ~1.0-alpha
