@@ -10,7 +10,7 @@ namespace matacms\environment;
 
 use Yii;
 use yii\base\Event;
-use mata\base\MessageEvent;
+use matacms\base\MessageEvent;
 use mata\arhistory\behaviors\HistoryBehavior;
 use mata\helpers\BehaviorHelper;
 use matacms\controllers\module\Controller;
@@ -170,9 +170,12 @@ class Bootstrap extends \mata\base\Bootstrap {
 				$documentForReviewUrl = Url::to([$updateRoute, 'id' => $model->getDocumentId()->getPk(), 'revision' => $ie->Revision], true);
 				$this->sendReviewMessage($reviewerModel['email'], [
 					'authorName' => Yii::$app->user->identity->username,
-					'documentForReviewUrl' => $documentForReviewUrl
+					'documentForReviewUrl' => $documentForReviewUrl,
+					'modelLabel' => $model->getModelLabel(),
+					'label' => $model->getLabel()
 					]);
 
+				Yii::$app->getSession()->addFlash(MessageEvent::LEVEL_SUCCESS, 'Request for review has been sent to ' . Yii::$app->user->identity->username);
 			}
 		}
 	}
