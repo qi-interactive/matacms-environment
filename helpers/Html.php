@@ -179,7 +179,8 @@ class Html {
 			$('#" . $containerId . " button.review-btn').on('click', function(e, data) {
 				$(this).siblings('input#environment-hidden-input').val($(this).attr('data-environment'));
 				isReviewButtonClicked = true;
-				isReviewerSet = data.isReviewerSet;
+				if(data !== undefined)
+					isReviewerSet = data.isReviewerSet;
 			});
 
 			form
