@@ -12,6 +12,10 @@
         "mata/mata-ar-history": "~1.0.0-alpha",
         "bower-asset/moment": "2.*"
     },
+    "require-dev": {
+        "matacms/matacms-base": "dev-development",
+        "mata/mata-ar-history": "dev-development"
+    },
     "autoload": {
         "psr-4": {
             "matacms\\environment\\": ""
