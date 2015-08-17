@@ -6,10 +6,10 @@
     "license": "MIT",
     "support": {
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "require": {
-        "matacms/matacms-base": "~1.1-alpha",
-        "mata/mata-ar-history": "~1.0.0-alpha",
+        "matacms/matacms-base": "dev-development",
+        "mata/mata-ar-history": "dev-development",
         "bower-asset/moment": "2.*"
     },
     "autoload": {
