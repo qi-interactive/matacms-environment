@@ -25,6 +25,12 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
+## 1.0.6-alpha, August 21, 2015
+
+- Added "Submit for review" button if user doesn't have any roles (rbac) assigned
+- Added sending notification email to "reviewer"
+-
+
 ## 1.0.5.1-alpha, June 20, 2015
 
 - Fixed dependency on matacms-base ~1.1-alpha
