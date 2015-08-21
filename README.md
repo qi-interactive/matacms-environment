@@ -29,7 +29,6 @@ Changelog
 
 - Added "Submit for review" button if user doesn't have any roles (rbac) assigned
 - Added sending notification email to "reviewer"
--
 
 ## 1.0.5.1-alpha, June 20, 2015
 
