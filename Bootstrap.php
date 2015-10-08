@@ -39,27 +39,34 @@ class Bootstrap extends \mata\base\Bootstrap {
 		Event::on(ActiveQuery::class, ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT, function(Event $event) {
 
 			// When logged into the CMS, latest version should be shown
-			if (!is_a(\Yii::$app, "yii\console\Application") && \Yii::$app->user->isGuest) {
+			if (!is_a(\Yii::$app, "yii\console\Application") && \Yii::$app->user->isGuest ) {
 
 				$activeQuery = $event->sender;
 				$modelClass = $activeQuery->modelClass;
 				$sampleModelObject = new $modelClass;
-				$documentIdBase = $sampleModelObject->getDocumentId()->getId();
-				$tableAlias = $activeQuery->getQueryTableName($activeQuery)[0];
 
-				if (count($modelClass::primaryKey()) > 1) {
-					throw new HttpException(500, sprintf("Composite keys are not handled yet. Table alias is %s", $tableAlias));
+				if (BehaviorHelper::hasBehavior($sampleModelObject, \mata\arhistory\behaviors\HistoryBehavior::class)) {
+
+					$documentIdBase = $sampleModelObject->getDocumentId()->getId();
+					$tableAlias = $activeQuery->getQueryTableName($activeQuery)[0];
+
+					if (count($modelClass::primaryKey()) > 1) {
+						throw new HttpException(500, sprintf("Composite keys are not handled yet. Table alias is %s", $tableAlias));
+					}
+
+					$tablePrimaryKey = $modelClass::primaryKey()[0];
+
+					// if ($activeQuery->join)
+					// 	foreach ($activeQuery->join as $join) {
+					// 		$tableToJoin = $join[1];
+					// 	 	$this->addItemEnvironmentJoin($activeQuery, $tableToJoin  . ".DocumentId", $documentIdBase);
+					// 	}
+
+					$this->addItemEnvironmentJoin($activeQuery, "CONCAT('" . $documentIdBase . "', " . $tableAlias . "." . $tablePrimaryKey . ")", $documentIdBase);
+
 				}
 
-				$tablePrimaryKey = $modelClass::primaryKey()[0];
 
-				// if ($activeQuery->join)
-				// 	foreach ($activeQuery->join as $join) {
-				// 		$tableToJoin = $join[1];
-				// 	 	$this->addItemEnvironmentJoin($activeQuery, $tableToJoin  . ".DocumentId", $documentIdBase);
-				// 	}
-
-				$this->addItemEnvironmentJoin($activeQuery, "CONCAT('" . $documentIdBase . "', " . $tableAlias . "." . $tablePrimaryKey . ")", $documentIdBase);
 			}
 		});
 
