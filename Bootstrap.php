@@ -45,7 +45,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 				$modelClass = $activeQuery->modelClass;
 				$sampleModelObject = new $modelClass;
 
-				if (BehaviorHelper::hasBehavior($sampleModelObject, \mata\arhistory\behaviors\HistoryBehavior::class)) {
+				if (BehaviorHelper::hasBehavior($sampleModelObject, \matacms\environment\behaviors\EnvironmentBehavior::class)) {
 
 					$documentIdBase = $sampleModelObject->getDocumentId()->getId();
 					$tableAlias = $activeQuery->getQueryTableName($activeQuery)[0];

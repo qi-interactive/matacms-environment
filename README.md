@@ -27,7 +27,7 @@ Changelog
 
 ## 1.0.6.1-alpha, October 8, 2015
 
-- Changed ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT to run only for models with HistoryBehavior  
+- Changed ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT to run only for models with EnvironmentBehavior  
 
 ## 1.0.6-alpha, August 21, 2015
 
