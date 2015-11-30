@@ -25,6 +25,10 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
+## 1.0.6.2-alpha, November 30, 2015
+
+- Bug fix
+
 ## 1.0.6.1-alpha, October 8, 2015
 
 - Changed ActiveQuery::EVENT_BEFORE_PREPARE_STATEMENT to run only for models with EnvironmentBehavior  

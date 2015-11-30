@@ -102,7 +102,7 @@ class Bootstrap extends \mata\base\Bootstrap {
 		$alias = $this->getTableAlias();
 
 		// TODO This encoding happens in Yii, use what they're offering. E.g. it is used in the call on line 91
-		$documentId = str_replace("\\", "\\\\\\",  $documentId);
+		$documentId = str_replace("\\", "\\\\",  $documentId);
 
 		if ($activeQuery->select == null)
 			$activeQuery->addSelect(["*", $alias . ".Revision"]);
