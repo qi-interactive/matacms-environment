@@ -49,15 +49,6 @@ class Html {
 
 		\Yii::$app->view->registerJs("
 
-			var UTCDate = function() {
-				return new Date(Date.UTC.apply(Date, arguments));
-			}
-
-			var UTCToday = function() {
-				var today = new Date();
-				return UTCDate(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), today.getUTCHours(), today.getUTCMinutes(), today.getUTCSeconds(), 0);
-			}
-
 			var setButtons = function(publicationDateField) {
 				var dateValue = publicationDateField.val();
 
@@ -81,9 +72,7 @@ class Html {
 				var publicationDateField = $('[id*=\"publicationdate\"]');
 
 				if(publicationDateField !== null || publicationDateField !== undefined) {
-
 					publicationDateField.on('change dp.change', function() {
-						console.log('change');
 						setButtons(publicationDateField);
 					});
 				}
@@ -93,10 +82,8 @@ class Html {
 			setButtons($('[id*=\"publicationdate\"]'));
 
 			$('#" . $containerId . " button').on('click', function() {
-				$(this).siblings('input:hidden').val($(this).attr('data-environment'));
+				$(this).siblings('input:hidden[name=" . ItemEnvironment::REQ_PARAM_ITEM_ENVIRONMENT . "]').val($(this).attr('data-environment'));
 			});
-
-
 
 			var form = $('#$formId'),
 			isSubmitted = false;

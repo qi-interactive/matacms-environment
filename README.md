@@ -25,6 +25,10 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
+## 1.0.6.3-alpha, May 13, 2016
+
+- Updates for matacms\environment\helpers\Html
+
 ## 1.0.6.2-alpha, November 30, 2015
 
 - Bug fix
