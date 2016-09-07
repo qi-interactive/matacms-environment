@@ -25,6 +25,10 @@ php yii migrate/up --migrationPath=@vendor/matacms/matacms-environment/migration
 Changelog
 ---------
 
+## 1.0.6.4-alpha, September 7, 2016
+
+- Added migration (alter DocumentId from 64 to 128 characters)
+
 ## 1.0.6.3-alpha, May 13, 2016
 
 - Updates for matacms\environment\helpers\Html
